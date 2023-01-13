@@ -1,9 +1,8 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { questions } from './Questions';
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import MultiStepProgressBar from './components/MultiStepProgressBar';
-import { FormItem } from './components/FormItem';
 import { MultiStepForm } from './components/MultiStepForm';
 import { string, object, date } from "yup";
 
@@ -52,8 +51,11 @@ function App() {
     const [submitted, setSubmitted] = useState(false);
     const [pagesAnswers, setPagesAnswers] = useState({});
 
-    const [validated, setValidated] = useState(true);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState([]);
+
+    useEffect(() => {
+        setErrorMessage([]);
+    }, [index]);
 
     // Submission callback
     const onSubmit = e => {
@@ -67,8 +69,7 @@ function App() {
                         // No validation error
                         goToNextPage();
                     }).catch(err => {
-                        setValidated(false);
-                        setErrorMessage(err.errors.join("\r\n"));
+                        setErrorMessage([...err.errors]);
                     })
                 break;
             case 2:
@@ -78,8 +79,7 @@ function App() {
                         // No validation error
                         goToNextPage();
                     }).catch(err => {
-                        setValidated(false);
-                        setErrorMessage(err.errors.join("\r\n"));
+                        setErrorMessage([...err.errors]);
                     })
                 break;
             default:
@@ -90,7 +90,6 @@ function App() {
     };
 
     const goToNextPage = () => {
-        setValidated(true);
         if (index - 3) {
             setIndex((prevIndex) => prevIndex + 1);
         } else {
@@ -136,9 +135,9 @@ function App() {
 
                 <Row className="m-5">
                     <Col className="align-self-center">
-                        {!validated && (
+                        {errorMessage.length > 0 && (
                             <div className='alert alert-danger' role="alert">
-                                {errorMessage}
+                                {errorMessage.map(msg => <li>{msg}</li>)}
                             </div>
                         )}
                     </Col>
