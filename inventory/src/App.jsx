@@ -1,6 +1,6 @@
 import './App.css';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import SearchBar from './components/SearchBar';
 import ItemsDisplay from './components/ItemsDisplay';
@@ -39,7 +39,10 @@ function App() {
         setFilters(searchParams);
     };
 
-    const deleteItem = (item) => {
+    // ! useCallback comes with a cost to check whether to rerender or not
+    // -> If view alot but not update alot then is okay
+    // -> If update alot then no point since it will already be changed everytime
+    const deleteItem = useCallback((item) => {
         const items = data["items"];
         const requestOptions = {
             method: "DELETE"
@@ -54,7 +57,7 @@ function App() {
                     setData({ items });
                 }
             })
-    }
+    }, [data]);
 
     const addItemToData = (item) => {
         const requestOptions = {
@@ -125,7 +128,7 @@ function App() {
                     <ItemsDisplay items={filterData(data["items"])} deleteItem={deleteItem} />
                 </div>
                 <div className="row mt-3">
-                    <AddItem addItem={addItemToData}/>
+                    <AddItem addItem={addItemToData} />
                 </div>
             </div>
         </Wrapper>
