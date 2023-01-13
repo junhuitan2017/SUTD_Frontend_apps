@@ -72,6 +72,15 @@ function App() {
                     })
                 break;
             case 2:
+                others
+                    .validate(pagesAnswers[index], { abortEarly: false })
+                    .then(responseData => {
+                        // No validation error
+                        goToNextPage();
+                    }).catch(err => {
+                        setValidated(false);
+                        setErrorMessage(err.errors.join("\r\n"));
+                    })
                 break;
             default:
                 console.log("No more validation required");
