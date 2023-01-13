@@ -1,6 +1,7 @@
 import './App.css';
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Fibonacci from './components/Fibonacci';
+import { UseReducerExample } from './components/UseReducerExample';
 
 const getArray = () => {
     for (let i = 0; i < 1000000000; i++) {
@@ -25,6 +26,7 @@ function App() {
                 onChange={(e) => setRandomInput(e.target.value)}
             />
             <p>{randomInput}</p>
+            <UseReducerExample />
         </main>
     );
 }
