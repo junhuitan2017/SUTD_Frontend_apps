@@ -1,0 +1,9 @@
+$primary-color: red;
+
+.body {
+    color: $primary-color;
+}
+
+:export {
+    primaryColor: $primary-color;
+}
