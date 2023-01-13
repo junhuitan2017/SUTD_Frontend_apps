@@ -1,0 +1,25 @@
+$primaryColor: red;
+$secondaryColor: orange;
+
+@mixin important-text($heading-type, $border-color, $background-color: white) {
+    background-color: $background-color;
+    font-weight: bold;
+    border: 1px solid $border-color;
+    @if $heading-type == h1 {
+        color: $primaryColor;
+        font-size: 30px;
+        
+    } @else if $heading-type == h2 {
+        color: $secondaryColor;
+        font-size: 25px;
+
+    }
+}
+
+h1 {
+  @include important-text(h1, red, yellow);
+}
+
+h2{
+    @include important-text(h2, green);
+}
