@@ -2,6 +2,10 @@ import './App.css';
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Fibonacci from './components/Fibonacci';
 import { UseReducerExample } from './components/UseReducerExample';
+import UseDeferredValueExample from './components/UseDeferredValueExample';
+import SearchBar from './components/SearchBar';
+import FormInput from './components/FormInput';
+import Video from './components/Video';
 
 const getArray = () => {
     for (let i = 0; i < 1000000000; i++) {
@@ -16,17 +20,7 @@ function App() {
 
     return (
         <main className='App'>
-            <Fibonacci userNumber={userNumber} setUserNumber={setUserNumber} />
-
-            <label>Random Input:</label>
-            <input
-                type="text"
-                value={randomInput}
-                placeholder="Random Input"
-                onChange={(e) => setRandomInput(e.target.value)}
-            />
-            <p>{randomInput}</p>
-            <UseReducerExample />
+            <Video />
         </main>
     );
 }

@@ -30,7 +30,7 @@ const initialState = {
 }
 
 export const UseReducerExample = () => {
-    // initially use these states, must pass 6 props down
+    // initially using these states, must pass 6 props down
     //// const [userInput, setuserInput] = useState("");
     //// const [count, setCount] = useState(0);
     //// const [color, setColor] = useState(false);
