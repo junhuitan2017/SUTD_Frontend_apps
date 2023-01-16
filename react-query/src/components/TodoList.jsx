@@ -1,6 +1,6 @@
 import { getTodos, addTodo, updateTodo, deleteTodo } from "../api/todosApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 
 import { useQuery, useMutation, useQueryClient } from "react-query";
@@ -20,6 +20,20 @@ const TodoList = () => {
     // * Wrap api calls with useMutation
     // * Need to mutation the cached data to let React know
     const addTodoMutation = useMutation(addTodo, {
+        // Update the cache when the post is successful
+        onSuccess: () => {
+            // Invalidate the todos cache, and trigger a refresh
+            queryClient.invalidateQueries("todos");
+        }
+    });
+    const updateTodoMutation = useMutation(updateTodo, {
+        // Update the cache when the post is successful
+        onSuccess: () => {
+            // Invalidate the todos cache, and trigger a refresh
+            queryClient.invalidateQueries("todos");
+        }
+    });
+    const deleteTodoMutation = useMutation(deleteTodo, {
         // Update the cache when the post is successful
         onSuccess: () => {
             // Invalidate the todos cache, and trigger a refresh
@@ -85,7 +99,29 @@ const TodoList = () => {
     } else if (isError) {
         content = <p>{error.message}</p>
     } else {
-        content = JSON.stringify(todos);
+        content = todos.map(todo => {
+            return (
+                <article key={todo.id}>
+                    <div className="todo">
+                        <input
+                            type="checkbox"
+                            checked={todo.completed}
+                            onChange={() => {
+                                updateTodoMutation.mutate({
+                                    ...todo,
+                                    completed: !todo.completed
+                                })
+                            }} />
+                        <label htmlFor={todo.id}>{todo.title}</label>
+                    </div>
+                    <button className="trash" onClick={() => {
+                        deleteTodoMutation.mutate({ id: todo.id });
+                    }}>
+                        <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                </article>
+            )
+        });
     }
 
     return (
