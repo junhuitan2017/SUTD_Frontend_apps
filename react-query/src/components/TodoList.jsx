@@ -15,7 +15,13 @@ const TodoList = () => {
         isError,
         error,
         data: todos // Rename the cache data as todos
-    } = useQuery("todos", getTodos); // Create a cache called "todos"
+    } = useQuery("todos", getTodos, {
+        select: data => data.sort((a, b) => b.id - a.id),
+        retry: 2,
+        onError: error => {
+            console.log(`Error has happened: ${error.message}`);
+        }
+    }); // Create a cache called "todos"
 
     // * Wrap api calls with useMutation
     // * Need to mutation the cached data to let React know
