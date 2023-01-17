@@ -20,7 +20,10 @@ const Heading = ({ title }: HeadingProps): ReactElement => {
     }, [test]);
 
     return (
-        <h1>{title}</h1>
+        <>
+            <h1>{title}</h1>
+            <h3>{message}</h3>
+        </>
     )
 };
 
