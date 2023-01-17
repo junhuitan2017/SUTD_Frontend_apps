@@ -1,0 +1,75 @@
+name: Test and Deploy
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run ESLint
+        run: npm run lint:scripts
+
+      - name: Run Stylelint
+        run: npm run lint:styles
+
+      - name: Run Tests
+        run: npm run test
+
+      - name: Run Cypress
+        uses: cypress-io/github-action@v5.0.0
+        timeout-minutes: 10
+        with:
+          install: false
+          config-file: cypress.config.ts
+          build: npm run build
+          start: npm run preview
+          # wait-on: 'http://127.0.0.1:3000'
+          browser: chrome
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: production-files
+          path: ./dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: production-files
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
